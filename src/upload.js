@@ -315,7 +315,7 @@ class uploadFactory {
         let optionTmp = this.option;
         let self = this;
         if (optionTmp.chunkSize) {
-            optionTmp.readStart = s;
+            curInstance.readStart = s;
             // 分片上传不需要处理loadend
             curInstance.uploadObj.loadendHandle = () => {
             };
@@ -598,9 +598,8 @@ function checkUpload(curInstance) {
  */
 function chunkUpload(obj, option, other) {
     let chunkSize = option.chunkSize;
-    option.readStart = (other && other.readStart) || option.readStart || 0;
-    option.uploadId = (other && other.uploadId) || option.uploadId;
-    let startPos = option.readStart || 0;
+    obj.readStart = (other && other.readStart) || obj.readStart || 0;
+    let startPos = obj.readStart || 0;
     let totalSize = obj.f.size;
     // 读取指定块的md5
     chunkReader(obj.readObj, startPos, chunkSize).then(data => {
@@ -614,17 +613,17 @@ function chunkUpload(obj, option, other) {
                     option.onError(obj.f, dataTmp)
                 }
                 return option.resolveTmp();
-            } else if (option.readStart + chunkSize < totalSize) {
+            } else if (obj.readStart + chunkSize < totalSize) {
                 let sTmp = getValue(dataTmp, 'data.detail.index') || 0;
                 // 读取重复片数限制
-                if (option.readStart === sTmp) {
+                if (obj.readStart === sTmp) {
                     obj.errNum = (obj.errNum || 0) + 1;
                 } else {
                     obj.errNum = 0;
                 }
                 obj.f.uploadedSize = sTmp;
-                option.readStart = sTmp;
-                chunkUpload(obj, option)
+                obj.readStart = sTmp;
+                chunkUpload(obj, option, other)
             } else {
                 if (typeof option.onSuccess === 'function') {
                     option.onSuccess(obj.f, dataTmp)
@@ -635,13 +634,13 @@ function chunkUpload(obj, option, other) {
         if (obj.f.status === 'abort') {
             return;
         }
-        let leftChunk = totalSize - option.readStart;
+        let leftChunk = totalSize - obj.readStart;
         let optionTmp = {
             md5: data.e.md5,
             name: obj.f.name,
             length: leftChunk >= chunkSize ? chunkSize : leftChunk,
-            index: option.readStart,
-            uploadId: option.uploadId
+            index: obj.readStart,
+            uploadId: other.uploadId
         };
         obj.f.readSize = optionTmp.index + optionTmp.length;
         obj.uploadObj.send(data.fp, optionTmp);
