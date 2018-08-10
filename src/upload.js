@@ -89,7 +89,8 @@ class Upload {
         let paramTmp = '';
         for (let k in objTmp) {
             let headSymbol = paramTmp ? '&' : '';
-            paramTmp += `${headSymbol}${k}=${objTmp[k]}`;
+            let valueTmp = encodeURIComponent(objTmp[k]);
+            paramTmp += `${headSymbol}${k}=${valueTmp}`;
         }
         return paramTmp
     }
