@@ -271,14 +271,6 @@ class uploadFactory {
         this.abortByKV.bind(this);
     }
 
-    // read(s,e,readInstance){
-    //     if(readInstance){
-    //         this.userInstance.readObj = readInstance;
-    //     } else{
-    //         readInstance = this.userInstance.readObj;
-    //     }
-    //     return readInstance.read(s,e);
-    // }
     find(uploadInstance, arrTmp) {
         if (!uploadInstance) {
             return;
@@ -403,7 +395,7 @@ class uploadFactory {
 
     loadNext() {
         console.log('this is loadNext function handled queue is: ', this.handleQueue);
-        let handleNum = this.handleQueue.length;
+        let handleNum = this.handleQueue.length || 0;
         let optionTmp = this.option;
         let sortFn = optionTmp.sort || '';
         if (typeof sortFn === 'function') {
@@ -414,6 +406,7 @@ class uploadFactory {
             let fTmp = curFO.f;
             if (fTmp.status === 'waiting' && (!handleNum || handleNum < optionTmp.synNum)) {
                 this.upload(fTmp);
+                handleNum += 1;
             }
         }
     }
@@ -598,6 +591,7 @@ function checkUpload(curInstance) {
  * @param option
  */
 function chunkUpload(obj, option, other) {
+    other = other || {};
     let chunkSize = option.chunkSize;
     obj.readStart = (other && other.readStart) || obj.readStart || 0;
     let startPos = obj.readStart || 0;
