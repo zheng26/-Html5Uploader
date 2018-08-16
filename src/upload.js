@@ -1,5 +1,8 @@
 let fileSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
 
+/**
+ * html5 fileReader实例
+ */
 class ReadFile {
     // fileReader实例
     // frInstance = '';
@@ -46,11 +49,13 @@ class ReadFile {
     }
 
 }
-
-// option = {
-//     srv: '', 服务器地址
-//     params: {} ,  上传参数
-// };
+/**
+ * 实例化参数
+ * option = {
+ *   srv: '', 服务器地址
+ *   params: {} ,  上传参数
+ * };
+ */
 class Upload {
     // xhr = '';
     // srvUrl = '';
@@ -227,29 +232,34 @@ class Upload {
 
 }
 
-// option={
-//     id: 目标id,
-//     multiple: 是否可以上传多个
-//     autoUpload: 是否自动上传
-//     synNum: 同时可以上传的个数 p.s.默认1个
-//     chunkSize:  0  当为大于0时，则以这个大小分片上传
-//     uploadOption: {  上传文件的配置
-//          srv: ''
-//          params: {
-//              md5: ''
-//          }
-//      }
-//     sameCheck: fn( resolveFn, rejectFn )  文件上传前的检测， 用于秒传 没有则不进行检测，   调用resolveFn则进行上传， 调用rejectFn则不进行上传
-//     sort: fn   // 排序 p.s. 排序的比较函数（通过对文件对象添加额外的）
-//     onFilter: fn （[file]） // 选中的文件过滤
-//     onProgress: fn   // 文件上传进度
-//     onSuccess: fn
-//     onError: fn
-//     onAbort: fn
-// }
-// 功能： 维持自己的上传队列，处理队列，只要发生错误就会被删除
-// webWorker 通过传入 { 'file': 文件对象， 'chunk': { s: 开始计算位置， chunkSize: 每片大小}}
-// webWorker 获得 { MD5: '', SHA1: '',  name: '', size: ''}
+/**
+ * 上传文件工厂，提供相关方法
+ * optons example: 
+ * option={
+ *   id: 目标id,
+ *   multiple: 是否可以上传多个
+ *   autoUpload: 是否自动上传
+ *   synNum: 同时可以上传的个数 p.s.默认1个
+ *   chunkSize:  0  当为大于0时，则以这个大小分片上传
+ *   uploadOption: {  上传文件的配置
+ *        srv: ''
+ *        params: {
+ *            md5: ''
+ *        }
+ *    }
+ *   sameCheck: fn( resolveFn, rejectFn )  文件上传前的检测， 用于秒传 没有则不进行检测，   调用resolveFn则进行上传， 调用rejectFn则不进行上传
+ *   sort: fn   // 排序 p.s. 排序的比较函数（通过对文件对象添加额外的）
+ *   onFilter: fn （[file]） // 选中的文件过滤
+ *   onProgress: fn   // 文件上传进度
+ *   onSuccess: fn
+ *   onError: fn
+ *   onAbort: fn
+ * }
+ * 功能： 维持自己的上传队列，处理队列，只要发生错误就会被删除
+ * webWorker 通过传入 { 'file': 文件对象， 'chunk': { s: 开始计算位置， chunkSize: 每片大小}}
+ * webWorker 获得 { MD5: '', SHA1: '',  name: '', size: ''}
+ * todo: 上传队列的处理不好，但能用
+ */
 class uploadFactory {
     // uploadQueue = [];
     constructor(option) {
@@ -484,7 +494,11 @@ class uploadFactory {
         }
     }
 
-    // IE才生效，所以不用
+    /**
+     * IE才生效，有兼容问题
+     * @param {*} fObj 
+     * @param {*} e 
+     */
     abortHandle(fObj, e) {
         if (this.option.onAbort) {
             let {obj: curInstance} = this.find(fObj);
@@ -561,6 +575,10 @@ function chunkReader(readObj, startPos, chunkSize) {
     });
 }
 
+/**
+ * 整个文件的md5计算，用于判断是否存在
+ * @param {*} curInstance 
+ */
 function checkUpload(curInstance) {
     let chunkTmp = 1024 * 1024 * 2;
     let sizeTmp = curInstance.f.size;
