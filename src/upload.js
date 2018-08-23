@@ -1,4 +1,4 @@
-let fileSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
+let fileSlice = window.File.prototype.slice || window.File.prototype.mozSlice || window.File.prototype.webkitSlice;
 
 /**
  * html5 fileReader实例
@@ -10,7 +10,7 @@ class ReadFile {
     // fileObj = '';
 
     constructor(fileObj) {
-        this.frInstance = new FileReader();
+        this.frInstance = new window.FileReader();
         this.fileObj = fileObj;
         this.read = (this.read).bind(this);
     }
@@ -496,8 +496,8 @@ class uploadFactory {
 
     /**
      * IE才生效，有兼容问题
-     * @param {*} fObj 
-     * @param {*} e 
+     * @param {object} fObj 
+     * @param {object} e 
      */
     abortHandle(fObj, e) {
         if (this.option.onAbort) {
@@ -577,7 +577,7 @@ function chunkReader(readObj, startPos, chunkSize) {
 
 /**
  * 整个文件的md5计算，用于判断是否存在
- * @param {*} curInstance 
+ * @param {Object} curInstance 
  */
 function checkUpload(curInstance) {
     let chunkTmp = 1024 * 1024 * 2;
