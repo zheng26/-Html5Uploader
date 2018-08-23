@@ -4,8 +4,9 @@
   "description": "html5 file upload component",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node scripts/devbuild.js"
+    "test": "mocha -r babel-core/register -r jsdom-global/register  test/**/*.js",
+    "dev": "node scripts/devbuild.js",
+    "start": "http-server -p 9999 -c-1"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,12 @@
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
+    "chai": "^4.1.2",
     "es6-promise": "^4.2.4",
+    "http-server": "^0.11.1",
+    "jsdom": "12.0.0",
+    "jsdom-global": "3.0.2",
+    "mocha": "^5.2.0",
     "webpack": "3.0.0"
   }
 }
